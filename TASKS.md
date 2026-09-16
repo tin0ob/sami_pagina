@@ -1,0 +1,4 @@
+- Remove the configuration panel of the first picture, and font.
+- The first picture and background then will be fondo3.jpg
+- Background picture should repeat vertically, and that should be the default background image of the website
+- On mobile that is positioned horizontile lets make the website always looks as a landscape, since its pictures and photografer based
