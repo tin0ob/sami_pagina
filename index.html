@@ -4,11 +4,24 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Samuel Guajardo — Fotografía</title>
-<!-- Google Fonts (used by the temp preview menu; page works with system fallbacks offline) -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;600&family=Montserrat:wght@300;400;600&family=Space+Grotesk:wght@300;400;600&family=Space+Mono&display=swap" rel="stylesheet">
+<!-- self-hosted fonts: static/ and variable/ -->
 <style>
+  /* ---------- self-hosted font: Playfair Display (latin woff2) ---------- */
+  @font-face {
+    font-family: 'Playfair Display';
+    font-style: normal;
+    font-weight: 400 900;
+    font-display: swap;
+    src: url('variable/playfair-display-latin-wght-normal.woff2') format('woff2');
+  }
+  @font-face {
+    font-family: 'Playfair Display';
+    font-style: italic;
+    font-weight: 400 900;
+    font-display: swap;
+    src: url('variable/playfair-display-latin-wght-italic.woff2') format('woff2');
+  }
+
   :root {
     --font: 'Playfair Display', Georgia, serif;
   }
@@ -19,45 +32,29 @@
 
   body {
     font-family: var(--font);
-    height: 100vh;
-    height: 100svh; /* mobile browsers: excludes the dynamic URL bar */
-    overflow-y: auto;
-    scroll-snap-type: y mandatory;
   }
 
   h1, h2, h3 { font-weight: 600; }
+
+  /* ---------- static site background: one image, fixed, fills the display ---------- */
+  .site-bg {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background: url('fondo/fondo3.JPG') center / cover no-repeat;
+  }
+  body.en .site-bg { filter: invert(1); }
 
   /* ---------- panels (vertical slider) ---------- */
   .panel {
     height: 100vh;
     height: 100svh;
-    scroll-snap-align: start;
     position: relative;
     overflow: hidden;
   }
 
   /* ---------- section 1: hero ---------- */
   .hero { overflow: hidden; }
-
-  .hero-bg {
-    position: absolute;
-    inset: 0;
-    background-size: cover;
-    background-position: center;
-    background-image: url('fondo/fondo1.JPG');
-  }
-
-  .site-name {
-    position: absolute;
-    top: 1.4rem;
-    left: 1.6rem;
-    margin: 0;
-    z-index: 2;
-    font-size: clamp(1.3rem, 2.6vw, 2.1rem);
-    letter-spacing: .08em;
-    color: #0a0a0a;
-    text-shadow: 0 1px 6px rgba(255,255,255,.6);
-  }
 
   .logo {
     position: absolute;
@@ -87,19 +84,17 @@
   }
 
   /* ---------- english mode: hero ---------- */
-  body.en .hero-bg { filter: invert(1); }
   body.en .logo    { filter: invert(1) drop-shadow(0 2px 8px rgba(0,0,0,.45)); }
-  body.en .site-name, body.en .scroll-hint {
+  body.en .scroll-hint {
     color: #f5f5f5;
     text-shadow: 0 1px 6px rgba(0,0,0,.65);
   }
 
-  /* ---------- intro reveal: name + logo fade in 3s after load ---------- */
-  .site-name, .logo, .scroll-hint {
+  /* ---------- intro reveal: logo + hint fade in 3s after load ---------- */
+  .logo, .scroll-hint {
     opacity: 0;
     transition: opacity 1.4s ease;
   }
-  body.hero-revealed .site-name,
   body.hero-revealed .logo,
   body.hero-revealed .scroll-hint { opacity: 1; }
 
@@ -135,7 +130,6 @@
 
   /* ---------- section 2: gallery carousel ---------- */
   .gallery {
-    background: #101010;
     display: flex;
     align-items: center;
   }
@@ -197,29 +191,29 @@
 
   /* ---------- section 3: bio ---------- */
   .bio-panel {
-    --bio-bg: #000;
-    --bio-fg: #fff;
-    background: var(--bio-bg);
+    --bio-bg: #fff; /* hover swap color (button hover flips fg/bg) */
+    --bio-fg: #111; /* text: black over the photo (spanish) */
+    height: auto;
+    min-height: 100svh;
     color: var(--bio-fg);
     display: flex;
-    overflow-y: auto;
     padding: 4rem 1.5rem;
   }
   .bio-inner {
-    margin: auto; /* centers when it fits; stays scrollable from the top when it overflows */
-    max-width: 58ch;
-    text-align: center;
+    margin: auto 0;              /* vertically centered; anchored to the left */
+    width: max(15rem, 42vw);     /* ≈70% of the left 60% zone; scales with the display */
+    text-align: left;
   }
-  .bio-inner h2 { font-size: clamp(1.6rem, 3vw, 2.4rem); letter-spacing: .06em; margin-bottom: 1.5rem; }
-  .bio-inner p  { font-size: 1.05rem; line-height: 1.75; }
-  .bio-inner h3 { margin-top: 2.5rem; font-size: 1rem; letter-spacing: .25em; text-transform: uppercase; }
+  .bio-inner h2 { font-size: clamp(1.6rem, 3vw, 3rem); letter-spacing: .06em; text-transform: uppercase; margin-bottom: 1.5rem; }
+  .bio-inner p  { font-size: clamp(1.05rem, 1.15vw, 1.35rem); line-height: 1.75; }
+  .bio-inner h3 { margin-top: 2.5rem; font-size: clamp(1rem, 1.1vw, 1.2rem); letter-spacing: .25em; text-transform: uppercase; }
   .bio-inner ul { list-style: none; padding: 0; margin: 1rem 0 0; }
-  .bio-inner li { font-size: .95rem; line-height: 1.9; opacity: .9; }
+  .bio-inner li { font-size: clamp(.95rem, 1.05vw, 1.25rem); line-height: 1.9; opacity: .9; }
   .bio-contact {
     margin-top: 2.5rem;
     display: flex;
     gap: 1rem;
-    justify-content: center;
+    justify-content: flex-start;
     flex-wrap: wrap;
   }
   .contact-btn {
@@ -241,8 +235,15 @@
   }
   .contact-btn svg { width: 1.15em; height: 1.15em; flex: 0 0 auto; }
 
-  /* english mode: bio panel inverts */
-  body.en .bio-panel { --bio-bg: #fafafa; --bio-fg: #111; }
+  /* english mode: bio text goes white over the inverted photo */
+  body.en .bio-panel {
+    --bio-bg: #111;
+    --bio-fg: #fff;
+  }
+
+  /* english mode: gallery controls go dark (the static photo is inverted) */
+  body.en .car-btn { color: #111; border-color: rgba(0,0,0,.3); background: rgba(255,255,255,.35); }
+  body.en .counter { color: rgba(0,0,0,.7); }
 
   /* ---------- language-specific content ---------- */
   .lng-en { display: none; }
@@ -277,91 +278,23 @@
   /* ---------- small screens ---------- */
   @media (max-width: 640px) {
     .lang-toggle { top: .6rem; right: .6rem; }
-    .site-name { top: 1rem; left: 1rem; }
     .slide { padding: 0 3vw; }
     .car-btn { width: 2.5rem; height: 2.5rem; font-size: 1.2rem; }
     .car-btn.prev { left: .5rem; }
     .car-btn.next { right: .5rem; }
     .bio-panel { padding: 3rem 1.25rem; }
-    body.devtools #devmenu {
-      flex-wrap: wrap;
-      white-space: normal;
-      justify-content: center;
-      max-width: 94vw;
-      border-radius: 1.1rem;
-      gap: .6rem;
-    }
-    #devmenu select { max-width: 38vw; }
   }
 
-  /* ====================================================================
-     TEMP PREVIEW MENU (fonts & fondo testing) — delete before shipping:
-     the CSS below, the #devmenu / #devmenu-toggle HTML, and the JS
-     sections marked TEMP in the script.
-  ==================================================================== */
-  #devmenu { display: none; }
-  body.devtools #devmenu {
-    display: flex;
-    position: fixed;
-    bottom: 1rem;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 60;
-    align-items: center;
-    gap: 1rem;
-    padding: .6rem 1.1rem;
-    border-radius: 999px;
-    background: rgba(20,20,20,.88);
-    border: 1px solid rgba(255,255,255,.2);
-    backdrop-filter: blur(6px);
-    color: #eee;
-    font-size: .8rem;
-    white-space: nowrap;
+  /* ---------- portrait phones: horizontal photos height-fit the carousel ---------- */
+  @media (max-width: 640px) and (orientation: portrait) {
+    .slide.wide img { max-width: none; height: 65vh; width: auto; } /* 60% of the screen, like the vertical photos render */
   }
-  #devmenu .dm-label { letter-spacing: .1em; text-transform: uppercase; opacity: .7; }
-  #devmenu .dm-group { display: flex; align-items: center; gap: .4rem; }
-  #devmenu .dm-cap { opacity: .6; margin-right: .2rem; }
-  #devmenu .dm-fondo {
-    font-family: inherit;
-    font-size: .8rem;
-    width: 1.8rem;
-    height: 1.8rem;
-    border-radius: 50%;
-    border: 1px solid rgba(255,255,255,.35);
-    background: transparent;
-    color: #eee;
-    cursor: pointer;
-  }
-  #devmenu .dm-fondo.active { background: #fff; color: #111; }
-  #devmenu select {
-    font-family: inherit;
-    font-size: .8rem;
-    padding: .3rem .5rem;
-    border-radius: .4rem;
-    border: 1px solid rgba(255,255,255,.35);
-    background: rgba(255,255,255,.1);
-    color: #eee;
-  }
-  #devmenu select option { color: #111; }
-
-  #devmenu-toggle {
-    position: fixed;
-    bottom: 1rem;
-    right: 1rem;
-    z-index: 60;
-    width: 2.6rem;
-    height: 2.6rem;
-    border-radius: 50%;
-    border: 1px solid rgba(255,255,255,.35);
-    background: rgba(20,20,20,.88);
-    color: #eee;
-    font-size: 1.1rem;
-    cursor: pointer;
-  }
-  /* ============================== /TEMP PREVIEW MENU ================== */
 </style>
 </head>
 <body>
+
+  <!-- static site background: one image, fixed, fills the display -->
+  <div class="site-bg" aria-hidden="true"></div>
 
   <!-- language toggle (fixed, outside the inverted layers) -->
   <div class="lang-toggle" id="lang-toggle">
@@ -371,8 +304,6 @@
 
   <!-- section 1: hero -->
   <section class="panel hero" id="hero">
-    <div class="hero-bg" id="hero-bg"></div>
-    <h1 class="site-name">Samuel Guajardo</h1>
     <img class="logo" src="logo/logo.svg" alt="Samuel Guajardo">
     <div class="scroll-hint" aria-hidden="true">↓</div>
   </section>
@@ -435,37 +366,9 @@
     <button data-target="bio" aria-label="Biografía"></button>
   </nav>
 
-  <!-- ====================================================================
-       TEMP PREVIEW MENU (delete before shipping)
-  ==================================================================== -->
-  <div id="devmenu">
-    <span class="dm-label">🔧 preview</span>
-    <div class="dm-group">
-      <span class="dm-cap">Fondo</span>
-      <button class="dm-fondo" data-fondo="0">1</button>
-      <button class="dm-fondo" data-fondo="1">2</button>
-      <button class="dm-fondo" data-fondo="2">3</button>
-      <button class="dm-fondo" data-fondo="3">4</button>
-    </div>
-    <div class="dm-group">
-      <span class="dm-cap">Tipografía</span>
-      <select id="dm-font">
-        <option value="0">Playfair Display (serif)</option>
-        <option value="1">Cormorant Garamond (serif)</option>
-        <option value="2">Inter (sans)</option>
-        <option value="3">Montserrat (sans)</option>
-        <option value="4">Space Grotesk (sans)</option>
-        <option value="5">Space Mono (mono)</option>
-      </select>
-    </div>
-  </div>
-  <button id="devmenu-toggle" title="Previsualización">⚙</button>
-  <!-- ============================== /TEMP PREVIEW MENU ================== -->
-
 <script>
   /* ---------- static asset lists ---------- */
   const IMAGES = [
-    'Kodak EB2 35mm-9.jpg',
     'R1-01801-0014.JPG',
     'R1-02033-0035.JPG',
     'R1-02034-0003.JPG',
@@ -481,37 +384,18 @@
     'samy 014  -  (36 de 36).jpg'
   ];
 
-  const FONDOS = ['fondo1.JPG', 'fondo2.JPG', 'fondo3.JPG', 'fondo4.JPG'];
-
-  const FONTS = [
-    { css: "'Playfair Display', Georgia, serif" },
-    { css: "'Cormorant Garamond', Georgia, serif" },
-    { css: "'Inter', system-ui, sans-serif" },
-    { css: "'Montserrat', system-ui, sans-serif" },
-    { css: "'Space Grotesk', system-ui, sans-serif" },
-    { css: "'Space Mono', 'Courier New', monospace" }
-  ];
-
-  /* ---------- state (persisted for testing) ---------- */
+  /* ---------- state (persisted) ---------- */
   const state = {
-    lang: localStorage.getItem('sg:lang') || 'es',
-    bg:   parseInt(localStorage.getItem('sg:bg') || '0', 10),
-    font: parseInt(localStorage.getItem('sg:font') || '0', 10)
+    lang: localStorage.getItem('sg:lang') || 'es'
   };
 
   const $ = (sel) => document.querySelector(sel);
-  const heroBg = $('#hero-bg');
 
   function applyState() {
     document.body.classList.toggle('en', state.lang === 'en');
     document.documentElement.lang = state.lang;
-    heroBg.style.backgroundImage = "url('fondo/" + encodeURI(FONDOS[state.bg]) + "')";
-    document.documentElement.style.setProperty('--font', FONTS[state.font].css);
     $('#lang-toggle').querySelectorAll('button').forEach(b =>
       b.classList.toggle('active', b.dataset.lang === state.lang));
-    document.querySelectorAll('.dm-fondo').forEach(b =>
-      b.classList.toggle('active', parseInt(b.dataset.fondo, 10) === state.bg));
-    $('#dm-font').value = String(state.font);
   }
 
   /* ---------- language toggle ---------- */
@@ -525,9 +409,10 @@
 
   /* ---------- gallery carousel ---------- */
   const carousel = $('#carousel');
+  const WIDE = ['R1-02572-0031 2.JPG', 'R1-02572-0034 2.JPG']; /* horizontal photos: height-fit on portrait */
   IMAGES.forEach((name) => {
     const slide = document.createElement('div');
-    slide.className = 'slide';
+    slide.className = 'slide' + (WIDE.includes(name) ? ' wide' : '');
     const img = document.createElement('img');
     img.src = 'img/' + encodeURI(name);
     img.alt = name;
@@ -536,25 +421,40 @@
   });
 
   const slides = [...carousel.children];
+  const total = slides.length;
+  slides.forEach((s) => carousel.appendChild(s.cloneNode(true))); /* duplicate the set: infinite loop */
+  const all = [...carousel.children];
 
-  function currentSlide() {
+  function setWidth() { /* width of one full set (slides have variable widths) */
+    let w = 0;
+    for (let i = 0; i < total; i++) w += all[i].getBoundingClientRect().width;
+    return w;
+  }
+
+  function currentSlide() { /* 0..2*total-1 */
     let best = 0, bestDist = Infinity;
-    slides.forEach((s, i) => {
+    all.forEach((s, i) => {
       const d = Math.abs(s.offsetLeft - carousel.scrollLeft);
       if (d < bestDist) { bestDist = d; best = i; }
     });
     return best;
   }
 
-  function go(delta) {
-    const i = Math.min(slides.length - 1, Math.max(0, currentSlide() + delta));
-    slides[i].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+  function go(delta) { /* wraps around, stays within the same set */
+    const cur = currentSlide();
+    const i = cur - (cur % total) + ((cur % total) + delta + total) % total;
+    all[i].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
   }
 
   $('#car-prev').addEventListener('click', () => go(-1));
   $('#car-next').addEventListener('click', () => go(1));
   carousel.addEventListener('scroll', () => {
-    $('#counter').textContent = (currentSlide() + 1) + ' / ' + slides.length;
+    const w = setWidth(); /* jump between identical sets: seamless loop */
+    if (w > 0) {
+      if (carousel.scrollLeft >= w) carousel.scrollLeft -= w;
+      else if (carousel.scrollLeft < 0) carousel.scrollLeft += w;
+    }
+    $('#counter').textContent = (currentSlide() % total) + 1 + ' / ' + total;
   }, { passive: true });
 
   /* ---------- dots navigation ---------- */
@@ -574,30 +474,9 @@
   }, { threshold: 0.5 });
   ['hero', 'gallery', 'bio'].forEach((id) => dotObserver.observe(document.getElementById(id)));
 
-  /* ================= TEMP PREVIEW MENU JS (delete before shipping) ================= */
-  document.querySelectorAll('.dm-fondo').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      state.bg = parseInt(btn.dataset.fondo, 10);
-      localStorage.setItem('sg:bg', String(state.bg));
-      applyState();
-    });
-  });
-
-  $('#dm-font').addEventListener('change', (e) => {
-    state.font = parseInt(e.target.value, 10);
-    localStorage.setItem('sg:font', String(state.font));
-    applyState();
-  });
-
-  $('#devmenu-toggle').addEventListener('click', () => {
-    document.body.classList.toggle('devtools');
-  });
-  /* ================= /TEMP PREVIEW MENU JS ================= */
-
   /* ---------- init ---------- */
-  FONDOS.forEach((f) => { const im = new Image(); im.src = 'fondo/' + encodeURI(f); }); // preload for instant switching
   applyState();
-  $('#counter').textContent = '1 / ' + slides.length;
+  $('#counter').textContent = '1 / ' + total;
   setTimeout(() => document.body.classList.add('hero-revealed'), 3000); // intro reveal
 </script>
 </body>
